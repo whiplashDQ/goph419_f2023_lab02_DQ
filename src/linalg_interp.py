@@ -52,7 +52,7 @@ def gauss_iter_solve(A,b,tol,alg):
         print('Invalid algorithm. Choose either "seidel" or "jacobi".')
         return None
 
-def spline_function(xd,yd,order):
+def spline_function(xd,yd,order=3 ):
     """
     Compute the spline function for a given set of data points
     xd: float array, increasing values of x 
@@ -63,34 +63,31 @@ def spline_function(xd,yd,order):
     import numpy as np
     from scipy.interpolate import interp1d, UnivariateSpline
 
-    def spline_function(xd, yd, order):
-        # Validation checks
-        # Converting to numpy arrays
-        xd = np.asarray(xd).flatten()
-        yd = np.asarray(yd).flatten()
+    xd = np.asarray(xd).flatten() # flatten to 1D array
+    yd = np.asarray(yd).flatten() # flatten to 1D array
 
-        if xd.size != yd.size:
-            raise ValueError("xd and yd must have the same length.")
-        if len(np.unique(xd)) != xd.size:
-            raise ValueError("xd contains repeated values.")
-        if not np.array_equal(xd, np.sort(xd)):
-            raise ValueError("xd values must be in increasing order.")
-        if order not in [1, 2, 3]:
-            raise ValueError("order must be 1, 2, or 3.")
+    if xd.size != yd.size: # check that xd and yd have the same size
+        raise ValueError("xd and yd must have the same length.")
+    if len(np.unique(xd)) != xd.size: # check that xd does not contain repeated values
+        raise ValueError("xd contains repeated values.")
+    if not np.array_equal(xd, np.sort(xd)): # check that xd is in increasing order
+        raise ValueError("xd values must be in increasing order.")
+    if order not in [1, 2, 3]: # check that order is 1, 2, or 3
+        raise ValueError("order must be 1, 2, or 3.")
 
-        # Creating the spline
-        if order == 1:
-            spline = interp1d(xd, yd, kind='linear')
-        elif order == 2:
-            spline = interp1d(xd, yd, kind='quadratic')
-        elif order == 3:
-            spline = interp1d(xd, yd, kind='cubic' )
-        
-        # Check if input is outside the range of xd values
-        if np.any(xd[0] > xd):
-            raise ValueError("x is outside the range of xd values.", xd,'is less than', xd[0])
-        if np.any(xd > xd[-1]):
-            raise ValueError("x is outside the range of xd values.", xd,'is greater than', xd[-1])    
-        
-        return spline
+    # Creating the spline
+    if order == 1: # linear spline
+        spline = interp1d(xd, yd, kind='linear')
+    elif order == 2: # quadratic spline
+        spline = interp1d(xd, yd, kind='quadratic')
+    else: # cubic spline
+        spline = interp1d(xd, yd, kind = order)
     
+    # Check if input is outside the range of xd values
+    if np.any(xd[0] > xd): # check if xd[0] is greater than any value in xd
+        raise ValueError("x is outside the range of xd values.", min(xd),'is less than', xd[0])
+    if np.any(xd > xd[-1]): # check if xd[-1] is less than any value in xd
+        raise ValueError("x is outside the range of xd values.", max(xd),'is greater than', xd[-1])    
+    
+    return spline
+ 

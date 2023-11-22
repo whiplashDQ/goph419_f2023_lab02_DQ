@@ -56,4 +56,44 @@ if __name__ == "__main__":
     main()
     
 
+# test spline_function
+import numpy as np
+from linalg_interp import spline_function
+from scipy.interpolate import UnivariateSpline
 
+def test_linear_spline():
+    x = np.linspace(-10, 11, 12)
+    y = 3 * x + 1  # Linear function
+    spline = spline_function(x, y, order=1)
+    assert np.allclose(spline(x), y), "Linear spline test failed"
+
+
+def test_quadratic_data():
+    x = np.linspace(-10, 11, 12)
+    y = 2*x**2 - 3*x + 1  # Quadratic function
+    spline = spline_function(x, y, order=2)
+    assert np.allclose(spline(x), y), "Quadratic spline test failed"
+
+def test_cubic_data():
+    x = np.linspace(-10, 11, 12)
+    y = x**3 - 2*x**2 + 3*x + 1  # Cubic function
+    spline = spline_function(x, y, order=3)
+    assert np.allclose(spline(x), y), "Cubic spline test failed"
+
+def test_univariate_spline():
+    x = np.linspace(-10, 11, 12)
+    y = np.exp(x)  # Exponential function
+    spline_custom = spline_function(x, y, order=3)
+    spline_scipy = UnivariateSpline(x, y, k=3, s=0, ext='raise')
+    assert np.allclose(spline_custom(x), spline_scipy(x)), "Comparison with UnivariateSpline failed"
+
+# Run tests
+if __name__ == "__main__":
+    test_linear_spline()
+    print("Linear data test passed")
+    test_quadratic_data()
+    print("Quadratic data test passed")
+    test_cubic_data()
+    print("Cubic data test passed")
+    test_univariate_spline()
+    print("Comparison with UnivariateSpline test passed")
