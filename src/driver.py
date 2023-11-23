@@ -24,7 +24,7 @@ def main():
             spline = spline_function(data[0], data[1],order)
             plt.subplot(2, 3, subplot_index)
             plt.scatter(data[0], data[1], label = 'Data')
-            plt.plot(water_t, water_d, label= f' Order = {order}')
+            plt.plot(data[0], spline(data[0]), label= f' Order = {order}')
             plt.xlabel('Temperature (C)')
             plt.ylabel('Density (kg/m^3)')
             plt.title(f'{plot_name[title_index]} Temp vs Density')
